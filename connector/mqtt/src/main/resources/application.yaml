@@ -1,0 +1,20 @@
+app:
+  mqtt-port: 1883
+  service-timeout: 60
+  address: connector-mqtt
+
+spring:
+  datasource:
+    url: xx
+    username: xx
+    password: xx
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  kafka:
+    bootstrap-servers: kafka:9092
+  data:
+    redis:
+      host: redis
+
+mybatis-plus:
+  configuration:
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler

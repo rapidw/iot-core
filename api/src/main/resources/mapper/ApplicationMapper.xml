@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.rapidw.iotcore.api.mapper.ApplicationMapper">
+  <resultMap id="BaseResultMap" type="io.rapidw.iotcore.common.entity.Application">
+    <!--@mbg.generated-->
+    <!--@Table iotcore.`application`-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="identifier" jdbcType="VARCHAR" property="identifier" />
+    <result column="key" jdbcType="VARCHAR" property="key" />
+    <result column="creat_time" jdbcType="TIMESTAMP" property="creatTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, `name`, identifier, `key`, creat_time
+  </sql>
+  <select id="getDevices" resultType="io.rapidw.iotcore.common.entity.Device">
+    select d.* from application_device a inner join device d on a.device_name=d.name where a.application_id=#{appId}
+    <if test="request.name!=null and request.name!=''">
+      and d.name like CONCAT('%',#{request.name},'%')
+    </if>
+    <if test="request.status!=null">
+      and d.status = #{request.status}
+    </if>
+  </select>
+</mapper>

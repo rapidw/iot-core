@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: iot-core-api
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      config:
+        file-extension: yaml
+        #是否启用nacos远程配置  true读nacos配置  false读本地配置
+        enabled: true
+        #共享配置
+        shared-configs:
+          - dataId: datasource
+            refresh: true
+          - dataId: redis
+            refresh: true
+
+
+management:
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      enabled: true  #优雅关闭springboot
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+
