@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.rapidw.iotcore.api.mapper.ApplicationMapper;
+import io.rapidw.iotcore.common.mapper.ApplicationMapper;
 import io.rapidw.iotcore.api.request.*;
 import io.rapidw.iotcore.api.response.ApplicationResponse;
 import io.rapidw.iotcore.api.utils.StringUtil;
@@ -15,6 +15,7 @@ import io.rapidw.iotcore.common.entity.Device;
 import io.rapidw.iotcore.common.exception.AppException;
 import io.rapidw.iotcore.common.exception.AppStatus;
 import io.rapidw.iotcore.common.response.PageResponse;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,19 +28,13 @@ import java.util.List;
 import static io.rapidw.iotcore.api.mapstruct.MapStructConverter.MAP_STRUCT_CONVERTER;
 
 @Service
+@RequiredArgsConstructor
 public class ApplicationService extends ServiceImpl<ApplicationMapper, Application> implements IService<Application> {
-
 
     private final DeviceService deviceService;
     private final ApplicationDeviceService applicationDeviceService;
     private final CallServiceService callServiceService;
 
-    
-    public ApplicationService(DeviceService deviceService, ApplicationDeviceService applicationDeviceService, CallServiceService callServiceService) {
-        this.deviceService = deviceService;
-        this.applicationDeviceService = applicationDeviceService;
-        this.callServiceService = callServiceService;
-    }
 
     /**
      * 创建应用
@@ -138,7 +133,7 @@ public class ApplicationService extends ServiceImpl<ApplicationMapper, Applicati
      */
     public Page<Device> getList(String appId, DevicePageRequest pageRequest) {
         Page<Device> page = new Page<>(pageRequest.getPageNum(), pageRequest.getPageSize());
-        baseMapper.getDevices(page, appId, pageRequest);
+        baseMapper.getDevices(page, appId, pageRequest.getName(), pageRequest.getStatus());
         return page;
     }
 

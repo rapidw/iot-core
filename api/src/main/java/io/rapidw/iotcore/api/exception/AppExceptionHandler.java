@@ -37,9 +37,6 @@ public class AppExceptionHandler {
 
     /**
      * 处理其他异常
-     * @param req
-     * @param e
-     * @return
      */
     @ExceptionHandler(Exception.class)
     public BaseResponse exceptionHandler(HttpServletRequest req, Exception e) {

@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.rapidw.iotcore.common.entity.ProductIdIncluded;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Builder
 @TableName(value = "iotcore.function_service")
 public class FunctionService extends ProductIdIncluded {

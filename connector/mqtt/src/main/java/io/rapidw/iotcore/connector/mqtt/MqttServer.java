@@ -11,6 +11,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.rapidw.mqtt.codec.v3_1_1.MqttV311Decoder;
 import io.rapidw.mqtt.codec.v3_1_1.MqttV311Encoder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Lookup;
@@ -20,14 +21,10 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class MqttServer {
 
     private final AppConfig appConfig;
-//    private ApplicationContext applicationContext;
-
-    public MqttServer(AppConfig appConfig, MqttHandler mqttHandler) {
-        this.appConfig = appConfig;
-    }
 
     @EventListener(ApplicationReadyEvent.class)
     public void start() {
@@ -55,7 +52,7 @@ public class MqttServer {
             log.info("mqtt server listen on {}", appConfig.getMqttPort());
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error("interrupted", e);
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();

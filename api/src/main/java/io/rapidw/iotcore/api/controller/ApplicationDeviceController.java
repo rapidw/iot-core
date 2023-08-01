@@ -9,22 +9,19 @@ import io.rapidw.iotcore.common.response.PageResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/applications")
+@RequestMapping("/applications/{id}")
 @Api(tags = "应用设备")
+@RequiredArgsConstructor
 public class ApplicationDeviceController {
 
     private final ApplicationService applicationService;
 
-    
-    public ApplicationDeviceController(ApplicationService applicationService) {
-        this.applicationService = applicationService;
-    }
-
-    @PostMapping("/{id}/devices")
+    @PostMapping("/devices")
     @ApiOperation(value = "新增关联设备")
     public BaseResponse bindingDevice(@ApiParam(name="id",value = "应用id",required = true)@PathVariable("id")String id ,
                                       @Validated @RequestBody ApplicationDeviceRequest request){
@@ -32,13 +29,13 @@ public class ApplicationDeviceController {
         return BaseResponse.ok();
     }
 
-    @GetMapping("/{id}/devices")
+    @GetMapping("/devices")
     @ApiOperation(value = "获取关联设备")
     public PageResponse<Device> getDevices(@ApiParam(name="id",value = "应用id",required = true)@PathVariable("id")String id, DevicePageRequest devicePageRequest){
         return PageResponse.of(applicationService.getList(id,devicePageRequest));
     }
 
-    @DeleteMapping("/{id}/devices")
+    @DeleteMapping("/devices")
     @ApiOperation(value = "删除关联设备")
     public BaseResponse delete(@ApiParam(name = "id",value = "应用id",required = true)@PathVariable("id")String id ,
                                @ApiParam(name = "productId",value = "产品id",required = true)@RequestParam("productId")String productId,

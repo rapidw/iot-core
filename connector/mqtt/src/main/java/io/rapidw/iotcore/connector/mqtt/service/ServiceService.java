@@ -10,6 +10,7 @@ import io.rapidw.iotcore.connector.mqtt.dto.response.ServiceResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ServiceService {
 
     private final ConnectionService connectionService;
@@ -28,15 +30,6 @@ public class ServiceService {
     private final DeviceLogService deviceLogService;
     private final FieldService fieldService;
     private final AppConfig appConfig;
-
-    public ServiceService(ConnectionService connectionService, ObjectMapper objectMapper,
-                          DeviceLogService deviceLogService, FieldService fieldService, AppConfig appConfig) {
-        this.connectionService = connectionService;
-        this.objectMapper = objectMapper;
-        this.deviceLogService = deviceLogService;
-        this.fieldService = fieldService;
-        this.appConfig = appConfig;
-    }
 
     @SneakyThrows
     public ServiceResponse invoke(String productId, String deviceName, String functionId, String requestString) {
@@ -124,35 +117,35 @@ public class ServiceService {
                         val currentEntry = entries.get(entryId);
                         val entryValue = entry.getValue();
                         switch (currentEntry.getType()) {
-                            case INT32:
+                            case INT32 -> {
                                 if (!(entryValue instanceof Integer)) {
                                     throwEntryException(fieldId, entryId, entryValue);
                                 }
-                                break;
-                            case INT64:
+                            }
+                            case INT64 -> {
                                 if (entryValue instanceof Long)
                                     break;
                                 if (entryValue instanceof Integer) {
                                     entry.setValue(((Integer) entryValue).doubleValue());
                                 }
                                 throwEntryException(fieldId, entryId, entryValue);
-                                break;
-                            case FLOAT:
+                            }
+                            case FLOAT -> {
                                 if (entryValue instanceof Double) {
                                     entry.setValue(((Double) entryValue).floatValue());
                                 }
                                 throwEntryException(fieldId, entryId, entryValue);
-                                break;
-                            case DOUBLE:
+                            }
+                            case DOUBLE -> {
                                 if (!(entryValue instanceof Double)) {
                                     throwEntryException(fieldId, entryId, entryValue);
                                 }
-                                break;
-                            case STRING:
+                            }
+                            case STRING -> {
                                 if (!(entryValue instanceof String)) {
                                     throwEntryException(fieldId, entryId, entryValue);
                                 }
-                                break;
+                            }
                         }
                     });
                     break;
@@ -218,35 +211,35 @@ public class ServiceService {
                         val currentEntry = entries.get(entryId);
                         val entryValue = entry.getValue();
                         switch (currentEntry.getType()) {
-                            case INT32:
+                            case INT32 -> {
                                 if (!(entryValue instanceof Integer)) {
                                     throwEntryException(fieldId, entryId, entryValue);
                                 }
-                                break;
-                            case INT64:
+                            }
+                            case INT64 -> {
                                 if (entryValue instanceof Long)
                                     break;
                                 if (entryValue instanceof Integer) {
                                     entry.setValue(((Integer) entryValue).doubleValue());
                                 }
                                 throwEntryException(fieldId, entryId, entryValue);
-                                break;
-                            case FLOAT:
+                            }
+                            case FLOAT -> {
                                 if (entryValue instanceof Double) {
                                     entry.setValue(((Double) entryValue).floatValue());
                                 }
                                 throwEntryException(fieldId, entryId, entryValue);
-                                break;
-                            case DOUBLE:
+                            }
+                            case DOUBLE -> {
                                 if (!(entryValue instanceof Double)) {
                                     throwEntryException(fieldId, entryId, entryValue);
                                 }
-                                break;
-                            case STRING:
+                            }
+                            case STRING -> {
                                 if (!(entryValue instanceof String)) {
                                     throwEntryException(fieldId, entryId, entryValue);
                                 }
-                                break;
+                            }
                         }
                     });
                     break;

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,16 +18,11 @@ import java.util.List;
 @RestController
 @RequestMapping
 @Api(tags = "服务调用")
+@RequiredArgsConstructor
 public class ServiceController {
 
     private final ProductService productService;
     private final ApplicationService applicationService;
-
-    
-    public ServiceController(ProductService productService, ApplicationService applicationService) {
-        this.productService = productService;
-        this.applicationService = applicationService;
-    }
 
     @PostMapping(value = "/products/{id}/devices/{deviceName}/services/{functionId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "调用设备服务(产品)", notes = "调用设备服务(产品)")

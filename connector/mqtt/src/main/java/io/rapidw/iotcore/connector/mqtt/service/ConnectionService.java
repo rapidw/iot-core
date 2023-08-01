@@ -2,6 +2,7 @@ package io.rapidw.iotcore.connector.mqtt.service;
 
 import io.rapidw.iotcore.connector.mqtt.MqttHandler;
 import io.rapidw.iotcore.connector.mqtt.config.AppConfig;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Component;
@@ -11,17 +12,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class ConnectionService {
 
     private final RedisService redisService;
     private final AppConfig appConfig;
 
     private final Map<String, Map<String, MqttHandler>> connections = new ConcurrentHashMap<>();
-
-    public ConnectionService(RedisService redisService, AppConfig appConfig) {
-        this.redisService = redisService;
-        this.appConfig = appConfig;
-    }
 
     public void addConnection(String productId, String deviceName, MqttHandler handler) {
         val deviceMap = connections.computeIfAbsent(productId, k -> new ConcurrentHashMap<>());

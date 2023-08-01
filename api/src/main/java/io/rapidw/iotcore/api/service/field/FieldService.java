@@ -3,7 +3,6 @@ package io.rapidw.iotcore.api.service.field;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.rapidw.iotcore.api.mapper.field.FieldMapper;
 import io.rapidw.iotcore.api.request.FieldRequest;
 import io.rapidw.iotcore.api.response.FieldResponse;
 import io.rapidw.iotcore.api.service.log.DeviceLogServiceService;
@@ -11,6 +10,8 @@ import io.rapidw.iotcore.common.entity.devicelog.DeviceLogService;
 import io.rapidw.iotcore.common.entity.field.*;
 import io.rapidw.iotcore.common.exception.AppException;
 import io.rapidw.iotcore.common.exception.AppStatus;
+import io.rapidw.iotcore.common.mapper.field.FieldMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 import static io.rapidw.iotcore.api.mapstruct.MapStructConverter.MAP_STRUCT_CONVERTER;
 
 @Service
+@RequiredArgsConstructor
 public class FieldService extends ServiceImpl<FieldMapper, Field> implements IService<Field> {
 
     private final Int32Service int32Service;
@@ -31,19 +33,6 @@ public class FieldService extends ServiceImpl<FieldMapper, Field> implements ISe
     private final StructService structService;
 
     private final DeviceLogServiceService deviceServiceService;
-
-
-    public FieldService(Int32Service int32Service, Int64Service int64Service, DoubleService doubleService,
-                        FloatService floatService, StringService stringService, StructService structService, DeviceLogServiceService deviceServiceService) {
-        this.int32Service = int32Service;
-        this.int64Service = int64Service;
-        this.doubleService = doubleService;
-        this.floatService = floatService;
-        this.stringService = stringService;
-        this.structService = structService;
-        this.deviceServiceService = deviceServiceService;
-    }
-
 
     public void insert(String functionId, List<FieldRequest> fields, String productId) {
         for (FieldRequest field : fields) {
@@ -72,7 +61,7 @@ public class FieldService extends ServiceImpl<FieldMapper, Field> implements ISe
 
     private void handleFieldType(Field.Type type, Integer fieldId, FieldRequest fieldRequest, String productId) {
         switch (type) {
-            case INT32:
+            case INT32 -> {
                 FieldRequest.FieldInt32Request fieldInt32 = fieldRequest.getFieldInt32();
                 if (null == fieldInt32) {
                     throw new AppException(AppStatus.BAD_REQUEST, "缺少int32字段描述！");
@@ -81,8 +70,8 @@ public class FieldService extends ServiceImpl<FieldMapper, Field> implements ISe
                 fieldInt321.setFieldId(fieldId);
                 fieldInt321.setProductId(productId);
                 int32Service.save(fieldInt321);
-                break;
-            case INT64:
+            }
+            case INT64 -> {
                 FieldRequest.FieldInt64Request fieldInt64 = fieldRequest.getFieldInt64();
                 if (null == fieldInt64) {
                     throw new AppException(AppStatus.BAD_REQUEST, "缺少int64字段描述！");
@@ -91,8 +80,8 @@ public class FieldService extends ServiceImpl<FieldMapper, Field> implements ISe
                 fieldInt641.setFieldId(fieldId);
                 fieldInt641.setProductId(productId);
                 int64Service.save(fieldInt641);
-                break;
-            case FLOAT:
+            }
+            case FLOAT -> {
                 FieldRequest.FieldFloatRequest fieldFloat = fieldRequest.getFieldFloat();
                 if (null == fieldFloat) {
                     throw new AppException(AppStatus.BAD_REQUEST, "缺少float字段描述！");
@@ -101,8 +90,8 @@ public class FieldService extends ServiceImpl<FieldMapper, Field> implements ISe
                 fieldFloat1.setFieldId(fieldId);
                 fieldFloat1.setProductId(productId);
                 floatService.save(fieldFloat1);
-                break;
-            case DOUBLE:
+            }
+            case DOUBLE -> {
                 FieldRequest.FieldDoubleRequest fieldDouble = fieldRequest.getFieldDouble();
                 if (null == fieldDouble) {
                     throw new AppException(AppStatus.BAD_REQUEST, "缺少double字段描述！");
@@ -111,8 +100,8 @@ public class FieldService extends ServiceImpl<FieldMapper, Field> implements ISe
                 fieldDouble1.setFieldId(fieldId);
                 fieldDouble1.setProductId(productId);
                 doubleService.save(fieldDouble1);
-                break;
-            case STRING:
+            }
+            case STRING -> {
                 FieldRequest.FieldStringRequest fieldString = fieldRequest.getFieldString();
                 if (null == fieldString) {
                     throw new AppException(AppStatus.BAD_REQUEST, "缺少string字段描述！");
@@ -121,12 +110,10 @@ public class FieldService extends ServiceImpl<FieldMapper, Field> implements ISe
                 fieldString1.setFieldId(fieldId);
                 fieldString1.setProductId(productId);
                 stringService.save(fieldString1);
-                break;
-            case STRUCT:
-                structService.insert(fieldId, fieldRequest.getFieldStruct(), productId);
-                break;
-            default:
-                break;
+            }
+            case STRUCT -> structService.insert(fieldId, fieldRequest.getFieldStruct(), productId);
+            default -> {
+            }
         }
     }
 

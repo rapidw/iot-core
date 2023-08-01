@@ -3,12 +3,12 @@ package io.rapidw.iotcore.api.service.struct;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.rapidw.iotcore.api.mapper.struct.StructEntryMapper;
 import io.rapidw.iotcore.api.request.FieldRequest;
 import io.rapidw.iotcore.api.response.FieldResponse;
 import io.rapidw.iotcore.common.entity.struct.*;
 import io.rapidw.iotcore.common.exception.AppException;
 import io.rapidw.iotcore.common.exception.AppStatus;
+import io.rapidw.iotcore.common.mapper.struct.EntryMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import static io.rapidw.iotcore.api.mapstruct.MapStructConverter.MAP_STRUCT_CONVERTER;
 
 @Service
-public class StructEntryService extends ServiceImpl<StructEntryMapper, Entry> implements IService<Entry> {
+public class StructEntryService extends ServiceImpl<EntryMapper, Entry> implements IService<Entry> {
     private final Int32EntryService int32EntryService;
     private final Int64EntryService int64EntryService;
     private final DoubleEntryService doubleEntryService;

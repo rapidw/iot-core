@@ -13,6 +13,7 @@ import io.rapidw.iotcore.common.response.PageResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,14 +22,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/products")
 @Api(tags = "功能")
+@RequiredArgsConstructor
 public class ProductFunctionController {
 
     private final FunctionService functionService;
-
-    
-    public ProductFunctionController(FunctionService functionService) {
-        this.functionService = functionService;
-    }
 
     @PostMapping("/{id}/functions/")
     @ApiOperation(value = "新增功能", notes = "新增功能")

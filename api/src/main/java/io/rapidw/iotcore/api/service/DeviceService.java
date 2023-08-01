@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.rapidw.iotcore.api.mapper.DeviceMapper;
+import io.rapidw.iotcore.common.mapper.DeviceMapper;
 import io.rapidw.iotcore.api.request.DeviceAddRequest;
 import io.rapidw.iotcore.api.request.DevicePageRequest;
 import io.rapidw.iotcore.api.request.DeviceUpdateRequest;

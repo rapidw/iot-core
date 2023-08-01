@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.rapidw.iotcore.api.mapper.ProductMapper;
+import io.rapidw.iotcore.common.mapper.ProductMapper;
 import io.rapidw.iotcore.api.request.ProductAddRequest;
 import io.rapidw.iotcore.api.request.ProductQueryRequest;
 import io.rapidw.iotcore.api.request.ProductUpdateRequest;

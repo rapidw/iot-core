@@ -13,21 +13,17 @@ import io.rapidw.iotcore.common.response.PageResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/products")
 @Api(tags = "产品")
+@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
-
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
-
 
     @PostMapping
     @ApiOperation(value = "新增产品", notes = "新增产品")

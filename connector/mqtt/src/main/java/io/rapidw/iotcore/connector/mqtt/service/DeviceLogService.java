@@ -1,19 +1,17 @@
 package io.rapidw.iotcore.connector.mqtt.service;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import io.rapidw.iotcore.connector.mqtt.mapper.DeviceLogServiceMapper;
+import io.rapidw.iotcore.common.mapper.log.DeviceServiceMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
 @Service
+@RequiredArgsConstructor
 public class DeviceLogService {
-    private final DeviceLogServiceMapper deviceLogServiceMapper;
-
-    public DeviceLogService(DeviceLogServiceMapper deviceLogServiceMapper) {
-        this.deviceLogServiceMapper = deviceLogServiceMapper;
-    }
+    private final DeviceServiceMapper deviceLogServiceMapper;
 
     public Integer saveServiceRequest(String productId, String deviceName, String serviceId, String requestString) {
         val now = Instant.now();

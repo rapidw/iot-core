@@ -20,6 +20,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.HashedWheelTimer;
 import io.rapidw.mqtt.codec.v3_1_1.*;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -44,6 +45,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@RequiredArgsConstructor
 public class MqttHandler extends SimpleChannelInboundHandler<MqttV311Packet> {
 
     private enum Subscription {
@@ -70,41 +72,16 @@ public class MqttHandler extends SimpleChannelInboundHandler<MqttV311Packet> {
     private final Map<Integer, ServiceService.Carrier> pendingPublishMessages = new ConcurrentHashMap<>();
     private ChannelHandlerContext ctx;
 
-    public MqttHandler(AppConfig appConfig, ObjectMapper objectMapper, ConnectionService connectionService,
-                       ProductService productService, DeviceService deviceService, KafkaService kafkaService,
-                       HashedWheelTimer hashedWheelTimer, RedisService redisService, ConnectorCheckService connectorCheckService) {
-        this.appConfig = appConfig;
-        this.objectMapper = objectMapper;
-        this.connectionService = connectionService;
-        this.productService = productService;
-        this.deviceService = deviceService;
-        this.kafkaService = kafkaService;
-        this.hashedWheelTimer = hashedWheelTimer;
-        this.redisService = redisService;
-        this.connectorCheckService = connectorCheckService;
-    }
-
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MqttV311Packet msg) throws Exception {
         log.debug("mqtthandler channelRead0 start, msgType={}",msg.getType());
         switch (msg.getType()) {
-            case CONNECT:
-                handleConnect(ctx, ((MqttV311ConnectPacket) msg));
-                break;
-            case PINGREQ:
-                handlePingReq(ctx);
-                break;
-            case PUBLISH:
-                handlePublish(ctx, ((MqttV311PublishPacket) msg));
-                break;
-            case SUBSCRIBE:
-                handleSubscribe(ctx, ((MqttV311SubscribePacket) msg));
-                break;
-            case UNSUBSCRIBE:
-                handleUnsubscribe(ctx, ((MqttV311UnsubscribePacket) msg));
-                break;
-            case DISCONNECT:
-                handleDisconnect(ctx);
+            case CONNECT -> handleConnect(ctx, ((MqttV311ConnectPacket) msg));
+            case PINGREQ -> handlePingReq(ctx);
+            case PUBLISH -> handlePublish(ctx, ((MqttV311PublishPacket) msg));
+            case SUBSCRIBE -> handleSubscribe(ctx, ((MqttV311SubscribePacket) msg));
+            case UNSUBSCRIBE -> handleUnsubscribe(ctx, ((MqttV311UnsubscribePacket) msg));
+            case DISCONNECT -> handleDisconnect(ctx);
         }
     }
 
@@ -216,18 +193,10 @@ public class MqttHandler extends SimpleChannelInboundHandler<MqttV311Packet> {
         for (String part: parts) {
             val kv = part.split("=");
             switch (kv[0]) {
-                case "v":
-                    version = kv[1];
-                    break;
-                case "et":
-                    et = kv[1];
-                    break;
-                case "m":
-                    method = kv[1];
-                    break;
-                case "s":
-                    signature = kv[1];
-                    break;
+                case "v" -> version = kv[1];
+                case "et" -> et = kv[1];
+                case "m" -> method = kv[1];
+                case "s" -> signature = kv[1];
             }
         }
         if (version == null || et == null || method == null || signature == null) {
@@ -248,20 +217,15 @@ public class MqttHandler extends SimpleChannelInboundHandler<MqttV311Packet> {
         val key = product.getKey();
 
         val stringForSignature = et + method + resource + version;
-        String newSignature;
-        switch (method) {
-            case "md5":
-                newSignature = Base64.encodeBase64URLSafeString(new HmacUtils(HmacAlgorithms.HMAC_MD5, key).hmac(stringForSignature));
-                break;
-            case "sha1":
-                newSignature = Base64.encodeBase64URLSafeString(new HmacUtils(HmacAlgorithms.HMAC_SHA_1, key).hmac(stringForSignature));
-                break;
-            case "sha256":
-                newSignature = Base64.encodeBase64URLSafeString(new HmacUtils(HmacAlgorithms.HMAC_SHA_256, key).hmac(stringForSignature));
-                break;
-            default:
-                throw new AppException(AppStatus.BAD_REQUEST, "unsupported hash method");
-        }
+        String newSignature = switch (method) {
+            case "md5" ->
+                    Base64.encodeBase64URLSafeString(new HmacUtils(HmacAlgorithms.HMAC_MD5, key).hmac(stringForSignature));
+            case "sha1" ->
+                    Base64.encodeBase64URLSafeString(new HmacUtils(HmacAlgorithms.HMAC_SHA_1, key).hmac(stringForSignature));
+            case "sha256" ->
+                    Base64.encodeBase64URLSafeString(new HmacUtils(HmacAlgorithms.HMAC_SHA_256, key).hmac(stringForSignature));
+            default -> throw new AppException(AppStatus.BAD_REQUEST, "unsupported hash method");
+        };
         if (!signature.equals(newSignature)) {
             throw new AppException(AppStatus.BAD_REQUEST, "signature not match");
         }
@@ -290,17 +254,11 @@ public class MqttHandler extends SimpleChannelInboundHandler<MqttV311Packet> {
         String string = new String(packet.getPayload());
         String topic = packet.getTopic();
         switch (topic) {
-            case AppConstants.PROPERTY_REQUEST_TOPIC:
-                postProperty(deserialize(string, PropertyRequest.class));
-                break;
-            case AppConstants.EVENT_REQUEST_TOPIC:
-                postEvent(deserialize(string, PropertyRequest.class));
-                break;
-            case AppConstants.SERVICE_RESP_TOPIC:
-                replyService(string, deserialize(string, MqttServiceResponse.class));
-                break;
-            default:
-                throw new AppException(AppStatus.BAD_REQUEST, "publish to unsupported topic: " + topic);
+            case AppConstants.PROPERTY_REQUEST_TOPIC -> postProperty(deserialize(string, PropertyRequest.class));
+            case AppConstants.EVENT_REQUEST_TOPIC -> postEvent(deserialize(string, PropertyRequest.class));
+            case AppConstants.SERVICE_RESP_TOPIC ->
+                    replyService(string, deserialize(string, MqttServiceResponse.class));
+            default -> throw new AppException(AppStatus.BAD_REQUEST, "publish to unsupported topic: " + topic);
         }
     }
 
@@ -341,18 +299,14 @@ public class MqttHandler extends SimpleChannelInboundHandler<MqttV311Packet> {
                 throw new AppException(AppStatus.BAD_REQUEST, "invalid subscription qos");
             }
             switch (v.getTopicFilter()) {
-                case AppConstants.PROPERTY_RESP_TOPIC:
-                    subscriptions.add(Subscription.PROPERTY);
-                    break;
-                case AppConstants.EVENT_RESP_TOPIC:
-                    subscriptions.add(Subscription.EVENT);
-                    break;
-                case AppConstants.SERVICE_REQUEST_TOPIC:
+                case AppConstants.PROPERTY_RESP_TOPIC -> subscriptions.add(Subscription.PROPERTY);
+                case AppConstants.EVENT_RESP_TOPIC -> subscriptions.add(Subscription.EVENT);
+                case AppConstants.SERVICE_REQUEST_TOPIC -> {
                     log.debug("subscriptions add service topic");
                     subscriptions.add(Subscription.SERVICE);
-                    break;
-                default:
-                    throw new AppException(AppStatus.BAD_REQUEST, "subscribe unsupported topic: " + v.getTopicFilter());
+                }
+                default ->
+                        throw new AppException(AppStatus.BAD_REQUEST, "subscribe unsupported topic: " + v.getTopicFilter());
             }
             qosLevels.add(MqttV311QosLevel.AT_MOST_ONCE);
         });
@@ -368,17 +322,10 @@ public class MqttHandler extends SimpleChannelInboundHandler<MqttV311Packet> {
 
         packet.getTopicFilters().forEach(v -> {
             switch (v) {
-                case AppConstants.PROPERTY_RESP_TOPIC:
-                    subscriptions.remove(Subscription.PROPERTY);
-                    break;
-                case AppConstants.EVENT_RESP_TOPIC:
-                    subscriptions.remove(Subscription.EVENT);
-                    break;
-                case AppConstants.SERVICE_REQUEST_TOPIC:
-                    subscriptions.remove(Subscription.SERVICE);
-                    break;
-                default:
-                    throw new AppException(AppStatus.BAD_REQUEST, "unsubscribe unsupported topic: " + v);
+                case AppConstants.PROPERTY_RESP_TOPIC -> subscriptions.remove(Subscription.PROPERTY);
+                case AppConstants.EVENT_RESP_TOPIC -> subscriptions.remove(Subscription.EVENT);
+                case AppConstants.SERVICE_REQUEST_TOPIC -> subscriptions.remove(Subscription.SERVICE);
+                default -> throw new AppException(AppStatus.BAD_REQUEST, "unsubscribe unsupported topic: " + v);
             }
         });
 

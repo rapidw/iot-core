@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.rapidw.iotcore.api.mapper.field.StructMapper;
 import io.rapidw.iotcore.api.request.FieldRequest;
 import io.rapidw.iotcore.api.response.FieldResponse;
 import io.rapidw.iotcore.api.service.struct.StructEntryService;
@@ -12,6 +11,7 @@ import io.rapidw.iotcore.common.entity.field.FieldStruct;
 import io.rapidw.iotcore.common.entity.struct.Entry;
 import io.rapidw.iotcore.common.exception.AppException;
 import io.rapidw.iotcore.common.exception.AppStatus;
+import io.rapidw.iotcore.common.mapper.field.FieldStructMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -19,14 +19,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class StructService extends ServiceImpl<StructMapper, FieldStruct> implements IService<FieldStruct> {
+public class StructService extends ServiceImpl<FieldStructMapper, FieldStruct> implements IService<FieldStruct> {
 
     private final StructEntryService structEntryService;
 
     public StructService(StructEntryService structEntryService) {
         this.structEntryService = structEntryService;
     }
-
 
     public void insert(Integer fieldId,FieldRequest.FieldStructRequest fieldStruct,String productId){
         if(null == fieldStruct){
@@ -47,9 +46,6 @@ public class StructService extends ServiceImpl<StructMapper, FieldStruct> implem
         }
         structEntryService.getByFieldStructId(fieldStruct.getId(),fieldResponse);
     }
-
-
-
 
     public void delete(String productId){
         remove(Wrappers.lambdaQuery(FieldStruct.class).eq(FieldStruct::getProductId,productId));

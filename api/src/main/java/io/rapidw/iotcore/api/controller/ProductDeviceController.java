@@ -11,6 +11,7 @@ import io.rapidw.iotcore.common.response.PageResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +20,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/products")
 @Api(tags = "产品设备")
+@RequiredArgsConstructor
 public class ProductDeviceController {
 
     private final DeviceService deviceService;
-
-    public ProductDeviceController(DeviceService deviceService) {
-        this.deviceService = deviceService;
-    }
 
     @PostMapping("/{id}/devices")
     @ApiOperation(value = "新增设备", notes = "新增设备")

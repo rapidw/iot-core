@@ -3,7 +3,7 @@ package io.rapidw.iotcore.api.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.rapidw.iotcore.api.mapper.ApplicationDeviceMapper;
+import io.rapidw.iotcore.common.mapper.ApplicationDeviceMapper;
 import io.rapidw.iotcore.common.entity.ApplicationDevice;
 import org.springframework.stereotype.Service;
 

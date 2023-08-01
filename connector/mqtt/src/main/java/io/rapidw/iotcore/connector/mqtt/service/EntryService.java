@@ -2,10 +2,11 @@ package io.rapidw.iotcore.connector.mqtt.service;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import io.rapidw.iotcore.common.entity.struct.*;
-import io.rapidw.iotcore.connector.mqtt.mapper.struct.*;
+import io.rapidw.iotcore.common.mapper.struct.*;
 import io.rapidw.iotcore.connector.mqtt.mapstruct.DtoMappers;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class EntryService {
     private final EntryMapper entryMapper;
     private final EntryInt32Mapper entryInt32Mapper;
@@ -20,15 +22,6 @@ public class EntryService {
     private final EntryFloatMapper entryFloatMapper;
     private final EntryDoubleMapper entryDoubleMapper;
     private final EntryStringMapper entryStringMapper;
-
-    public EntryService(EntryMapper entryMapper, EntryInt32Mapper entryInt32Mapper, EntryInt64Mapper entryInt64Mapper, EntryFloatMapper entryFloatMapper, EntryDoubleMapper entryDoubleMapper, EntryStringMapper entryStringMapper) {
-        this.entryMapper = entryMapper;
-        this.entryInt32Mapper = entryInt32Mapper;
-        this.entryInt64Mapper = entryInt64Mapper;
-        this.entryFloatMapper = entryFloatMapper;
-        this.entryDoubleMapper = entryDoubleMapper;
-        this.entryStringMapper = entryStringMapper;
-    }
 
     public Map<String, FullEntry> getAllStructEntry(Integer structId) {
         val entries = entryMapper.selectList(Wrappers.lambdaQuery(Entry.class)
